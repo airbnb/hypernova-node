@@ -27,7 +27,7 @@ const devModePlugin = require('../plugins/devModePlugin');
 const app = express();
 
 const renderer = new Renderer({
-  url: 'http://localhost:3553/batch',
+  url: 'http://localhost:3030/batch',
   plugins: [
     devModePlugin,
   ],
