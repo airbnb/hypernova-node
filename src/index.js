@@ -158,6 +158,12 @@ class Renderer {
           }
         });
 
+        const successfulJobs = reduce(res.results, {}, (success, key) => Object.assign(success, {
+          [key]: res.results[key].job,
+        }));
+
+        this.pluginReduce('onSuccess', plugin => plugin(successfulJobs));
+
         // if there are any plugins, run them
         // otherwise toHTML the response and send that
         return this.plugins.length
