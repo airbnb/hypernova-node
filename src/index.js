@@ -126,20 +126,16 @@ class Renderer {
       // { [string]: { error: Error?, html: string, job: Job } }
       // eslint-disable-next-line arrow-body-style
       return axios.post(this.url, item.jobsHash, this.config).then((res) => {
-        return {
-          error: null,
-          results: reduce(res.data, {}, (obj, key) => {
-            const body = res.data[key];
+        const results = res.data.results;
 
-            obj[key] = { // eslint-disable-line no-param-reassign
-              error: body.error,
-              html: body.error ? renderHTML(key, data[key]) : body.html,
-              job: item.jobsHash[key],
-            };
+        Object.keys(results).forEach((key) => {
+          const body = results[key];
 
-            return obj;
-          }, {}),
-        };
+          body.job = item.jobsHash[key];
+          body.html = body.error ? renderHTML(key, data[key]) : body.html;
+        });
+
+        return res.data;
       });
     })
     // if there is an error retrieving the result set or converting it then lets just fallback
