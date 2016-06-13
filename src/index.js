@@ -1,4 +1,5 @@
 const axios = require('axios');
+const values = require('object.values');
 
 function reduce(obj, init, f) {
   return Object.keys(obj).reduce((a, b) => f(a, b), init);
@@ -148,7 +149,7 @@ class Renderer {
       try {
         if (res.error) throw res.error;
 
-        Object.values(results).forEach((job) => {
+        values(results).forEach((job) => {
           if (job.error) {
             this.pluginReduce('onError', plugin => plugin(job.error, job));
           }
