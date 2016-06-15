@@ -22,7 +22,7 @@ function fallback(error, jobs) {
     results: reduce(jobs, {}, (obj, key) => {
       // eslint-disable-next-line no-param-reassign
       obj[key] = {
-        error,
+        error: null,
         html: renderHTML(key, jobs[key].data),
         job: jobs[key],
       };
@@ -147,7 +147,7 @@ class Renderer {
       const results = res.results;
 
       try {
-        if (res.error) throw res.error;
+        if (res.error) this.pluginReduce('onError', plugin => plugin(res.error, results));
 
         values(results).forEach((job) => {
           if (job.error) {
