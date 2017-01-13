@@ -23,8 +23,8 @@
   "author": "Josh Perez <josh.perez@airbnb.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.9.1",
-    "object.values": "^1.0.3"
+    "axios": "^0.15.3",
+    "object.values": "^1.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
