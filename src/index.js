@@ -72,7 +72,7 @@ class Renderer {
         data = this.pluginReduce(
           'getViewData',
           (plugin, newData) => plugin(name, newData),
-          jobs[name]
+          jobs[name],
         );
       } catch (err) {
         // let the plugins know about the error but we intentionally
@@ -95,7 +95,7 @@ class Renderer {
       const jobsHash = this.pluginReduce(
         'prepareRequest',
         (plugin, next) => plugin(next, jobs),
-        jobs
+        jobs,
       );
 
       // should we actually fire off a request?
