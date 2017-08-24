@@ -114,63 +114,63 @@ class Renderer {
     const jobs = this.createJobs(data);
 
     return this.prepareRequest(jobs)
-    // Query our server and retrieve the jobs data
-    .then((item) => {
-      if (!item.shouldSendRequest) {
-        return fallback(null, item.jobsHash);
-      }
+      // Query our server and retrieve the jobs data
+      .then((item) => {
+        if (!item.shouldSendRequest) {
+          return fallback(null, item.jobsHash);
+        }
 
-      // let everyone know we'll be firing a request
-      this.pluginReduce('willSendRequest', plugin => plugin(item.jobsHash));
+        // let everyone know we'll be firing a request
+        this.pluginReduce('willSendRequest', plugin => plugin(item.jobsHash));
 
-      // fire the request and then convert the response into a shape of
-      // { [string]: { error: Error?, html: string, job: Job } }
-      // eslint-disable-next-line arrow-body-style
-      return axios.post(this.url, item.jobsHash, this.config).then((res) => {
-        const results = res.data.results;
+        // fire the request and then convert the response into a shape of
+        // { [string]: { error: Error?, html: string, job: Job } }
+        // eslint-disable-next-line arrow-body-style
+        return axios.post(this.url, item.jobsHash, this.config).then((res) => {
+          const results = res.data.results;
 
-        Object.keys(results).forEach((key) => {
-          const body = results[key];
+          Object.keys(results).forEach((key) => {
+            const body = results[key];
 
-          body.job = item.jobsHash[key];
-          body.html = body.error ? renderHTML(key, data[key]) : body.html;
+            body.job = item.jobsHash[key];
+            body.html = body.error ? renderHTML(key, data[key]) : body.html;
+          });
+
+          return res.data;
         });
+      })
+      // if there is an error retrieving the result set or converting it then lets just fallback
+      // to client rendering for all the jobs.
+      .catch(err => fallback(err, jobs))
+      // Run our afterResponse plugins and send back our response.
+      .then((res) => {
+        const results = res.results;
 
-        return res.data;
+        try {
+          if (res.error) this.pluginReduce('onError', plugin => plugin(res.error, results));
+
+          values(results).forEach((job) => {
+            if (job.error) {
+              this.pluginReduce('onError', plugin => plugin(job.error, job));
+            }
+          });
+
+          const successfulJobs = reduce(res.results, {}, (success, key) => Object.assign(success, {
+            [key]: res.results[key].job,
+          }));
+
+          this.pluginReduce('onSuccess', plugin => plugin(successfulJobs));
+
+          // if there are any plugins, run them
+          // otherwise toHTML the response and send that
+          return this.plugins.length
+            ? this.pluginReduce('afterResponse', (plugin, next) => plugin(next, results), results)
+            : toHTML(results);
+        } catch (err) {
+          this.pluginReduce('onError', plugin => plugin(err, results));
+          return toHTML(results);
+        }
       });
-    })
-    // if there is an error retrieving the result set or converting it then lets just fallback
-    // to client rendering for all the jobs.
-    .catch(err => fallback(err, jobs))
-    // Run our afterResponse plugins and send back our response.
-    .then((res) => {
-      const results = res.results;
-
-      try {
-        if (res.error) this.pluginReduce('onError', plugin => plugin(res.error, results));
-
-        values(results).forEach((job) => {
-          if (job.error) {
-            this.pluginReduce('onError', plugin => plugin(job.error, job));
-          }
-        });
-
-        const successfulJobs = reduce(res.results, {}, (success, key) => Object.assign(success, {
-          [key]: res.results[key].job,
-        }));
-
-        this.pluginReduce('onSuccess', plugin => plugin(successfulJobs));
-
-        // if there are any plugins, run them
-        // otherwise toHTML the response and send that
-        return this.plugins.length
-          ? this.pluginReduce('afterResponse', (plugin, next) => plugin(next, results), results)
-          : toHTML(results);
-      } catch (err) {
-        this.pluginReduce('onError', plugin => plugin(err, results));
-        return toHTML(results);
-      }
-    });
   }
 }
 
