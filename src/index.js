@@ -127,7 +127,7 @@ class Renderer {
         // { [string]: { error: Error?, html: string, job: Job } }
         // eslint-disable-next-line arrow-body-style
         return axios.post(this.url, item.jobsHash, this.config).then((res) => {
-          const results = res.data.results;
+          const { results } = res.data;
 
           Object.keys(results).forEach((key) => {
             const body = results[key];
@@ -144,7 +144,7 @@ class Renderer {
       .catch(err => fallback(err, jobs))
       // Run our afterResponse plugins and send back our response.
       .then((res) => {
-        const results = res.results;
+        const { results } = res;
 
         try {
           if (res.error) this.pluginReduce('onError', plugin => plugin(res.error, results));
