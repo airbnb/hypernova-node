@@ -1,5 +1,6 @@
 const axios = require('axios');
 const values = require('object.values');
+const uuidV4 = require('uuid/v4');
 
 function reduce(obj, init, f) {
   return Object.keys(obj).reduce((a, b) => f(a, b), init);
@@ -10,9 +11,11 @@ function encode(obj) {
 }
 
 function renderHTML(viewName, data) {
+  const uuid = uuidV4();
+
   return `
-    <div data-hypernova-key="${viewName}"></div>
-    <script type="application/json" data-hypernova-key="${viewName}"><!--${encode(data)}--></script>
+    <div data-hypernova-key="${viewName}" data-hypernova-id="${uuid}"></div>
+    <script type="application/json" data-hypernova-key="${viewName}" data-hypernova-id="${uuid}"><!--${encode(data)}--></script>
   `;
 }
 
