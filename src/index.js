@@ -1,8 +1,17 @@
 const axios = require('axios');
 const values = require('object.values');
+const DATA_KEY = 'hypernova-key';
+const DATA_ID = 'hypernova-id';
 
 function reduce(obj, init, f) {
   return Object.keys(obj).reduce((a, b) => f(a, b), init);
+}
+
+function uuid() {
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
+    /[018]/g,
+    x => (x ^ Math.random() * 16 >> x / 4).toString(16), // eslint-disable-line no-mixed-operators, no-bitwise, max-len
+  );
 }
 
 function encode(obj) {
@@ -10,9 +19,10 @@ function encode(obj) {
 }
 
 function renderHTML(viewName, data) {
+  const id = uuid();
   return `
-    <div data-hypernova-key="${viewName}"></div>
-    <script type="application/json" data-hypernova-key="${viewName}"><!--${encode(data)}--></script>
+    <div data-${DATA_KEY}="${viewName}" data-${DATA_ID}="${id}"></div>
+    <script type="application/json" data-${DATA_KEY}="${viewName}" data-${DATA_ID}="${id}"><!--${encode(data)}--></script>
   `;
 }
 
