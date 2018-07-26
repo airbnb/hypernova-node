@@ -15,6 +15,8 @@ describe('Server is broken', () => {
   it('fall back to client rendering', (done) => {
     runTest(done, provideRenderer, (html) => {
       assert.isString(html, 'fallback html is returned');
+      assert.include(html, 'data-hypernova-key', 'hypernova key is in html');
+      assert.include(html, 'data-hypernova-id', 'hypernova id is in html');
     });
   });
 
