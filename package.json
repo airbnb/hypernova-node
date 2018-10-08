@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-airbnb": "^2.5.2",
+    "babel-preset-airbnb": "^3.0.0",
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
     "eslint": "^4.19.1",
