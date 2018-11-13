@@ -2,12 +2,10 @@ language: node_js
 os:
  - linux
 node_js:
+  - "11"
   - "10"
-  - "9"
   - "8"
-  - "7"
   - "6"
-  - "5"
   - "4"
 before_install:
   - 'nvm install-latest-npm'
