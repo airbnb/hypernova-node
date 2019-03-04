@@ -44,7 +44,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.5.3",
     "rimraf": "^2.6.2",
-    "sinon": "^6.3.5"
+    "sinon": "^7.2.7"
   },
   "engines": {
     "node": ">= 0.10"
