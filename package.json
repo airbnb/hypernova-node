@@ -43,7 +43,7 @@
     "express": "^4.16.4",
     "istanbul": "^0.4.5",
     "mocha": "^3.5.3",
-    "rimraf": "^2.6.2",
+    "rimraf": "^3.0.1",
     "sinon": "^6.3.5"
   },
   "engines": {
